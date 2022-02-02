@@ -1,0 +1,82 @@
+## Refs: https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml
+##
+## Default values for kube-prometheus-stack.
+## This is a YAML-formatted file.
+## Declare variables to be passed into your templates.
+##
+
+global:
+  %{~ if pull_secrets == true ~}
+  imagePullSecrets:
+    - name: ${regcred}
+  %{~ endif ~}
+## Using default values from https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml
+##
+grafana:
+  ingress:
+    ## If true, Grafana Ingress will be created
+    ##
+    enabled: ${grafana_ingress_enabled}
+    annotations:
+      kubernetes.io/ingress.class: ${ingress_class}
+      %{~ if cert_manager_enabled == 1 ~}
+      cert-manager.io/cluster-issuer: "${cluster_issuer_name}"
+      acme.cert-manager.io/http01-edit-in-place: "true"
+      %{~ endif ~}
+    hosts:
+      - ${ingress_host}
+      %{~ if cert_manager_enabled == 1 ~}
+    tls:
+      - secretName: ${secret_name}
+        hosts:
+          - ${ingress_host}
+      %{~ endif ~}
+  resources:
+  %{~ if grafana_resources.cpu_requests != "" && grafana_resources.memory_requests != "" ~}
+    requests:
+      cpu: ${grafana_resources.cpu_requests}
+      memory: ${grafana_resources.memory_requests}
+  %{~ endif ~}
+  persistence:
+    enabled: true
+    %{~ if trimspace(storage_class_name) != "" ~}
+    storageClassName: ${storage_class_name}
+    %{~ endif ~}
+    size: ${grafana_pv_size}
+  %{~ if prometheus_operator_resources.cpu_requests != "" && prometheus_operator_resources.memory_requests != "" ~}
+prometheusOperator:
+  resources:
+    requests:
+      cpu: ${prometheus_operator_resources.cpu_requests}
+      memory: ${prometheus_operator_resources.memory_requests}
+  %{~ endif ~}
+
+prometheus:
+  prometheusSpec:
+  %{~ if prometheus_resources.cpu_requests != "" && prometheus_resources.memory_requests != "" ~}
+    resources:
+      requests:
+        cpu: ${prometheus_resources.cpu_requests}
+        memory: ${prometheus_resources.memory_requests}
+  %{~ endif ~}  
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+        %{~ if trimspace(storage_class_name) != "" ~}
+          storageClassName: ${storage_class_name}
+        %{~ endif ~}
+          resources:
+            requests:
+              storage: ${prometheus_pv_size}
+
+# Disable Etcd metrics
+kubeEtcd:
+  enabled: ${kube_etcd}
+
+# Disable Controller metrics
+kubeControllerManager:
+  enabled: ${kube_controller_manager}
+
+# Disable Scheduler metrics
+kubeScheduler:
+  enabled: ${kube_scheduler}

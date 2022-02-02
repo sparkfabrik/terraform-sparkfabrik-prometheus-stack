@@ -1,0 +1,25 @@
+## Custom values for k8s-prometheus-adapter.
+## Refs: https://github.com/helm/charts/blob/master/stable/prometheus-adapter/values.yaml
+prometheus:
+  url: http://${prometheus_internal_url}
+  port: 9090
+  path: ""
+
+rbac:
+  create: true
+
+serviceAccount:
+  create: true
+
+rules:
+  default: true
+  custom:
+  existing:
+  external: []
+
+resources:
+  %{~ if prometheus_adapter_resources != {} ~}
+  requests:
+    cpu: ${prometheus_adapter_resources.cpu_requests}
+    memory: ${prometheus_adapter_resources.memory_requests}
+  %{~ endif ~}
