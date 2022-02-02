@@ -43,13 +43,13 @@ grafana:
     storageClassName: ${storage_class_name}
     %{~ endif ~}
     size: ${grafana_pv_size}
-  %{~ if prometheus_operator_resources.cpu_requests != "" && prometheus_operator_resources.memory_requests != "" ~}
+%{~ if prometheus_operator_resources.cpu_requests != "" && prometheus_operator_resources.memory_requests != "" ~}
 prometheusOperator:
   resources:
     requests:
       cpu: ${prometheus_operator_resources.cpu_requests}
       memory: ${prometheus_operator_resources.memory_requests}
-  %{~ endif ~}
+%{~ endif ~}
 
 prometheus:
   prometheusSpec:

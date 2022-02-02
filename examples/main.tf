@@ -30,4 +30,8 @@ module "kube_prometheus_stack" {
     memory_requests = "1Gi"
   }
   company = "Sparkfabrik"
+  ingress_class = "nginx"
+  kube_etcd = true
+  kube_controller_manager = true
+  kube_scheduler = true
 }
