@@ -1,7 +1,7 @@
 config {
-  module = true
-  force = false
-  disabled_by_default = false
-
   varfile = ["examples/test.tfvars"]
+}
+
+rule "terraform_unused_declarations" {
+  enabled = true
 }
