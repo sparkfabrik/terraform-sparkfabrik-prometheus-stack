@@ -6,7 +6,7 @@
 ##
 
 global:
-  %{~ if pull_secrets == true ~}
+  %{~ if trimspace(regcred) != "" ~}
   imagePullSecrets:
     - name: ${regcred}
   %{~ endif ~}
@@ -19,18 +19,18 @@ grafana:
     enabled: ${grafana_ingress_enabled}
     annotations:
       kubernetes.io/ingress.class: ${ingress_class}
-      %{~ if cert_manager_enabled == 1 ~}
-      cert-manager.io/cluster-issuer: "${cluster_issuer_name}"
+      %{~ if grafana_cert_manager_enabled == 1 ~}
+      cert-manager.io/cluster-issuer: "${grafana_cluster_issuer_name}"
       acme.cert-manager.io/http01-edit-in-place: "true"
       %{~ endif ~}
     hosts:
-      - ${ingress_host}
-      %{~ if cert_manager_enabled == 1 ~}
+      - ${grafana_ingress_host}
+    %{~ if cert_manager_enabled == 1 ~}
     tls:
-      - secretName: ${secret_name}
+      - secretName: ${grafana_cert_manager_secret_name}
         hosts:
-          - ${ingress_host}
-      %{~ endif ~}
+          - ${grafana_ingress_host}
+    %{~ endif ~}
   resources:
   %{~ if grafana_resources.cpu_requests != "" && grafana_resources.memory_requests != "" ~}
     requests:
@@ -58,7 +58,7 @@ prometheus:
       requests:
         cpu: ${prometheus_resources.cpu_requests}
         memory: ${prometheus_resources.memory_requests}
-  %{~ endif ~}  
+  %{~ endif ~}
     storageSpec:
       volumeClaimTemplate:
         spec:

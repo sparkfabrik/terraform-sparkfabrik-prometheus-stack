@@ -6,9 +6,9 @@ locals {
   app_name = "kube-prometheus-stack"
   adapter_app_name = "prometheus-adapter"
   prometheus_service_name = "kube-prometheus-stack-prometheus"
-  needs_auth = length(var.basic_auth_username) > 0
-  cert_manager_enabled = length(var.cluster_issuer_name) > 0
-  auth_realm = "Authentication Required - ${var.company}"
+  needs_auth = length(var.grafana_ingress_basic_auth_username) > 0
+  grafana_cert_manager_enabled = length(var.grafana_cert_manager_cluster_issuer_name) > 0
+  auth_realm = var.grafana_ingress_basic_auth_message
 }
 
 data "template_file" "kube_prometheus_stack_config" {
@@ -16,12 +16,12 @@ data "template_file" "kube_prometheus_stack_config" {
     "${path.module}/values/kube-prometheus-stack.yml",
     {
       storage_class_name = var.storage_class_name
-      secret_name = var.secret_name
+      grafana_cert_manager_secret_name = var.grafana_cert_manager_secret_name
       pull_secrets = var.pull_secrets
       regcred = var.regcred
       ingress_host = var.ingress_host
-      cluster_issuer_name = var.cluster_issuer_name
-      cert_manager_enabled = local.cert_manager_enabled
+      grafana_cluster_issuer_name = var.grafana_cert_manager_cluster_issuer_name
+      grafana_cert_manager_enabled = local.cert_manager_enabled
       grafana_pv_size = var.grafana_pv_size
       prometheus_pv_size = var.prometheus_pv_size
       prometheus_resources = var.prometheus_resources
@@ -123,12 +123,12 @@ data "template_file" "prometheus_adapter_config" {
 }
 
 resource "helm_release" "prometheus_adapter" {
-  count = var.install_adapter ? 1 : 0
+  count = var.prometheus_install_adapter ? 1 : 0
   name = local.adapter_app_name
   repository = "https://prometheus-community.github.io/helm-charts"
   chart = "prometheus-adapter"
   namespace = var.namespace
-  version = var.adapter_chart_version
+  version = var.prometheus_adapter_chart_version
 
   values = [data.template_file.prometheus_adapter_config.template]
 }

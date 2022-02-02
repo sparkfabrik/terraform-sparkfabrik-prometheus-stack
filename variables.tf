@@ -1,74 +1,35 @@
-variable "namespace" {
-  type = string
-  description = "Namespace Prometheus Stack"
-  default = "kube-prometheus-stack"
-}
-
 variable "chart_version" {
   type = string
   description = "Chart version Prometheus-stack"
 }
 
-variable "grafana_pv_size" {
+variable "namespace" {
   type = string
-  description = "Grafana Persistence Volume"
-  default = "10Gi"
+  description = "This is the namespace used to install kube-prometheus-stack, it will be created."
+  default = "kube-prometheus-stack"
 }
 
 variable "prometheus_pv_size" {
   type = string
-  description = "Prometheus Persistence Volume"
+  description = "Prometheus PV size"
   default = "100Gi"
 }
 
-variable "ingress_host" {
-  type = string
-  description = "DNS Grafana"
-}
-
-variable "basic_auth_username" {
-  type = string
-  description = "Username Basic Auth"
-  default = "admin"
-}
-
-variable "cluster_issuer_name" {
-  type = string
-  description = "Resource representing the certification authority (CA)"
-  default = ""
-}
-
-variable "install_adapter" {
+variable "prometheus_install_adapter" {
   type = bool
   description = "Enable Prometheus Adapter"
   default = false
 }
 
-variable "grafana_ingress_enabled" {
-  type = bool
-  description = "Enable Ingress for Grafana"
-  default = true
-}
-
-variable "adapter_chart_version" {
+variable "prometheus_adapter_chart_version" {
   type = string
   description = "Chart version Prometheus Adapter"
   default = ""
 }
 
-variable "pull_secrets" {
-  description = "Enable imagePullSecrets connect with docker hub"
-  type = bool
-}
-
 variable "regcred" {
   type = string
   description = "Name of the secret docker credential"
-}
-
-variable "secret_name" {
-  type = string
-  description = "Cert-manager secretName"
 }
 
 variable "storage_class_name" {
@@ -79,49 +40,28 @@ variable "storage_class_name" {
 variable "prometheus_resources" {
   type        = any
   description = "Prometheus resource"
-  default     = { 
-                  cpu_requests = "", 
-                  memory_requests = "" 
+  default     = {
+                  cpu_requests = "",
+                  memory_requests = ""
                 }
 }
 
 variable "prometheus_operator_resources" {
   type        = any
   description = "PrometheusOperetor resource"
-  default     = { 
-                  cpu_requests = "", 
-                  memory_requests = "" 
-                }
-}
-
-variable "grafana_resources" {
-  type        = any
-  description = "Grafana resource"
-  default     = { 
-                  cpu_requests = "", 
-                  memory_requests = "" 
+  default     = {
+                  cpu_requests = "",
+                  memory_requests = ""
                 }
 }
 
 variable "prometheus_adapter_resources" {
   type        = any
   description = "PrometheusAdapter resource"
-  default     = { 
-                  cpu_requests = "", 
-                  memory_requests = "" 
+  default     = {
+                  cpu_requests = "",
+                  memory_requests = ""
                 }
-}
-
-variable "company" {
-  type = string
-  description = "The name of the company displayed on grafana"
-  default = "Company"
-}
-
-variable "ingress_class" {
-  type = string
-  description = "Ingress Class"
-  default = "nginx"
 }
 
 variable "kube_etcd" {
@@ -138,6 +78,63 @@ variable "kube_controller_manager" {
 
 variable "kube_scheduler" {
   type = bool
-  descdescription = "Component scraping kube scheduler"
+  description = "Component scraping kube scheduler"
   default = false
 }
+
+# Grafana config.
+variable "grafana_ingress_class" {
+  type = string
+  description = "Ingress Class"
+  default = "nginx"
+}
+
+variable "grafana_ingress_host" {
+  type = string
+  description = "Grafana ingress host"
+}
+
+variable "grafana_ingress_enabled" {
+  type = bool
+  description = "Enable Ingress for Grafana"
+  default = true
+}
+
+variable "grafana_ingress_basic_auth_username" {
+  type = string
+  description = "Grafana basic auth username (if not empty it will be activated)."
+  default = "admin"
+}
+
+variable "grafana_ingress_basic_auth_message" {
+  type = string
+  description = "Grafana basic auth message."
+  default = "Authentication Required"
+}
+
+variable "grafana_cert_manager_cluster_issuer_name" {
+  type = string
+  description = "Resource representing the cluster issuer of cert-manager (used to deploy a TLS cert for Grafana ingress)."
+  default = ""
+}
+
+variable "grafana_cert_manager_secret_name" {
+  type = string
+  description = "cert-manager tls secret name (as this is an helm values file we should pass it manually, we cannot use the release name)"
+}
+
+variable "grafana_resources" {
+  type        = any
+  description = "Grafana resource"
+  default     = {
+                  cpu_requests = "",
+                  memory_requests = ""
+                }
+}
+
+variable "grafana_pv_size" {
+  type = string
+  description = "Grafana PV size"
+  default = "10Gi"
+}
+
