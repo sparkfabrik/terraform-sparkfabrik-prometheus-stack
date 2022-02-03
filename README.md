@@ -1,6 +1,12 @@
 # Terraform Prometheus stack module
 
-# Configuration Helm and Kubernetes provider
+![tflint status](https://github.com/sparkfabrik/terraform-sparkfabrik-prometheus-stack/actions/workflows/tflint.yml/badge.svg?branch=main)
+
+This is Terraform module to install and configure the [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) helm chart, it also allows to control the grafana annotations to secure the grafana access, trough nginx-ingress + cert-manager.
+
+This module is provided without any kind of warranty and is GPL3 licensed.
+
+# Configuration Helm and Kubernetes providers
 
 ```
 provider "kubernetes" {
@@ -28,7 +34,7 @@ module "kube_prometheus_stack" {
   prometheus_pv_size = "10"
   chart_version = "v31.0.0"
   ingress_host = "monitoring.example.com"
-  basic_auth_username = "admin" # username prometheus 
+  basic_auth_username = "admin" # username prometheus
   cluster_issuer_name = "production-tls"
   install_adapter = "false"
   adapter_chart_version = "3.0.1"
