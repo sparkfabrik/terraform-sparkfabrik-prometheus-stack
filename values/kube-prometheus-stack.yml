@@ -13,10 +13,11 @@ global:
 ## Using default values from https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml
 ##
 grafana:
+  %{~ if trimspace(grafana_ingress_host) != "" ~}
   ingress:
     ## If true, Grafana Ingress will be created
     ##
-    enabled: ${grafana_ingress_enabled}
+    enabled: true 
     annotations:
       kubernetes.io/ingress.class: ${ingress_class}
       %{~ if trimspace(grafana_cluster_issuer_name) != "" ~}
@@ -31,6 +32,7 @@ grafana:
         hosts:
           - ${grafana_ingress_host}
     %{~ endif ~}
+  %{~ endif ~}
   resources:
   %{~ if grafana_resources.cpu_requests != "" && grafana_resources.memory_requests != "" ~}
     requests:

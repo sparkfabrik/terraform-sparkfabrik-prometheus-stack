@@ -29,20 +29,23 @@ provider "helm" {
 ```
 module "kube_prometheus_stack" {
   source = "sparkfabrik/terraform-sparkfabrik-prometheus-stack"
+  prometheus_stack_chart_version = "v31.0.0"
+  prometheus_adapter_chart_version = "3.0.1"
   namespace = "prometheus-stack"
-  grafana_pv_size = "10"
-  prometheus_pv_size = "10"
-  chart_version = "v31.0.0"
-  ingress_host = "monitoring.example.com"
-  basic_auth_username = "admin" # username prometheus
-  cluster_issuer_name = "production-tls"
-  install_adapter = "false"
-  adapter_chart_version = "3.0.1"
+  prometheus_pv_size = "10Gi"
   regcred = "" # docker credentials
-  pull_secrets = ""
-  secret_name = "monitoring-tls" # secret name tls
-  storage_class_name = ""
-  company = "Sparkfabrik"
+  kube_etcd = true
+  kube_controller_manager = true
+  kube_scheduler = true
+  grafana_ingress_class = "nginx"
+  grafana_ingress_host = "monitoring.example.com"
+  grafana_ingress_basic_auth_username = "admin" # username basic auth Ingress
+  grafana_ingress_basic_auth_message = "Authentication Required" # basic auth messages
+  grafana_cert_manager_cluster_issuer_name = "production-tls"
+  grafana_cert_manager_secret_name = "monitoring-tls" # secret name tls
+  grafana_pv_size = "10Gi"
+  storage_class_name = "gp2"
+
   prometheus_resources = {
     cpu_requests    = "50m"
     memory_requests = "1Gi"

@@ -20,7 +20,6 @@ prometheus_adapter_resources = {
 kube_etcd = true
 kube_controller_manager = true
 kube_scheduler = true
-grafana_ingress_enabled = true
 grafana_ingress_class = "nginx"
 grafana_ingress_host = "monitoring.example.com"
 grafana_ingress_basic_auth_message = "Grafana basic auth"

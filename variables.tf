@@ -1,6 +1,12 @@
-variable "chart_version" {
+variable "prometheus_stack_chart_version" {
   type = string
   description = "Chart version Prometheus-stack"
+}
+
+variable "prometheus_adapter_chart_version" {
+  type = string
+  description = "Chart version Prometheus Adapter. If the variable is left empty, the Prometheus Adapter Chart will not be installed"
+  default = ""
 }
 
 variable "namespace" {
@@ -15,11 +21,6 @@ variable "prometheus_pv_size" {
   default = "100Gi"
 }
 
-variable "prometheus_adapter_chart_version" {
-  type = string
-  description = "Chart version Prometheus Adapter"
-  default = ""
-}
 
 variable "regcred" {
   type = string
@@ -86,13 +87,8 @@ variable "grafana_ingress_class" {
 
 variable "grafana_ingress_host" {
   type = string
-  description = "Grafana ingress host"
-}
-
-variable "grafana_ingress_enabled" {
-  type = bool
-  description = "Enable Ingress for Grafana"
-  default = true
+  description = "Grafana ingress host. If the variable left empty, the ingress not be enabled"
+  default = ""
 }
 
 variable "grafana_ingress_basic_auth_username" {
@@ -109,7 +105,7 @@ variable "grafana_ingress_basic_auth_message" {
 
 variable "grafana_cert_manager_cluster_issuer_name" {
   type = string
-  description = "Resource representing the cluster issuer of cert-manager (used to deploy a TLS cert for Grafana ingress)."
+  description = "Resource representing the cluster issuer of cert-manager (used to deploy a TLS cert for Grafana ingress). If the variable is left empty, the annotations will not be added"
   default = ""
 }
 

@@ -7,7 +7,6 @@ locals {
   adapter_app_name = "prometheus-adapter"
   prometheus_service_name = "kube-prometheus-stack-prometheus"
   auth_realm = var.grafana_ingress_basic_auth_message
-  prometheus_install_adapter = length(trimspace(var.prometheus_adapter_chart_version)) > 0
 }
 
 data "template_file" "kube_prometheus_stack_config" {
@@ -22,7 +21,6 @@ data "template_file" "kube_prometheus_stack_config" {
       grafana_cluster_issuer_name = var.grafana_cert_manager_cluster_issuer_name
       grafana_pv_size = var.grafana_pv_size
       grafana_resources = var.grafana_resources
-      grafana_ingress_enabled = var.grafana_ingress_enabled
       grafana_ingress_class = var.grafana_ingress_class
       prometheus_pv_size = var.prometheus_pv_size
       prometheus_resources = var.prometheus_resources
@@ -50,7 +48,7 @@ resource "kubernetes_namespace" "kube_prometheus_stack_namespace" {
 }
 
 resource "kubernetes_secret" "kube_prometheus_ingress_auth" {
-  count = var.grafana_ingress_enabled ? 1 : 0
+  count = trimspace(var.grafana_ingress_host) != "" ? 1 : 0
   metadata {
     name      = "${local.app_name}-basic-auth"
     namespace = var.namespace
@@ -72,7 +70,7 @@ resource "helm_release" "kube_prometheus_stack" {
   repository = "https://prometheus-community.github.io/helm-charts"
   chart = "kube-prometheus-stack"
   namespace = var.namespace
-  version = var.chart_version
+  version = var.prometheus_stack_chart_version
   create_namespace = true
 
   values = [data.template_file.kube_prometheus_stack_config.template]
@@ -121,7 +119,7 @@ data "template_file" "prometheus_adapter_config" {
 }
 
 resource "helm_release" "prometheus_adapter" {
-  count = local.prometheus_install_adapter ? 1 : 0
+  count = trimspace(var.prometheus_adapter_chart_version) != "" ? 1 : 0
   name = local.adapter_app_name
   repository = "https://prometheus-community.github.io/helm-charts"
   chart = "prometheus-adapter"
