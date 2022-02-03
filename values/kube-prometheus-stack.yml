@@ -82,3 +82,6 @@ kubeControllerManager:
 # Disable Scheduler metrics
 kubeScheduler:
   enabled: ${kube_scheduler}
+
+alertmanager:
+  enabled: ${alert_manager}

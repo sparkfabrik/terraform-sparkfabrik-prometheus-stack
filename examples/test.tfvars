@@ -1,4 +1,4 @@
-chart_version = "v30.2.0"
+prometheus_stack_chart_version = "31.0.0"
 namespace = "kube-prometheus-stack"
 regcred = "true"
 storage_class_name = "gp2"
@@ -20,6 +20,7 @@ prometheus_adapter_resources = {
 kube_etcd = true
 kube_controller_manager = true
 kube_scheduler = true
+alert_manager = true
 grafana_ingress_class = "nginx"
 grafana_ingress_host = "monitoring.example.com"
 grafana_ingress_basic_auth_message = "Grafana basic auth"

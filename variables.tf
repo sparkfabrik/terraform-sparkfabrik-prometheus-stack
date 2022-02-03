@@ -78,6 +78,12 @@ variable "kube_scheduler" {
   default = false
 }
 
+variable "alert_manager" {
+  type = bool
+  description = "Deploy alertmanager"
+  default = false
+}
+
 # Grafana config.
 variable "grafana_ingress_class" {
   type = string
@@ -128,4 +134,3 @@ variable "grafana_pv_size" {
   description = "Grafana PV size"
   default = "10Gi"
 }
-

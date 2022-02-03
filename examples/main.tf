@@ -1,6 +1,6 @@
 module "kube_prometheus_stack" {
   source = "sparkfabrik/terraform-sparkfabrik-prometheus-stack"
-  prometheus_stack_chart_version = "v31.0.0"
+  prometheus_stack_chart_version = "32.0.0"
   prometheus_adapter_chart_version = "3.0.1"
   namespace = "prometheus-stack"
   prometheus_pv_size = "10Gi"
@@ -8,6 +8,7 @@ module "kube_prometheus_stack" {
   kube_etcd = true
   kube_controller_manager = true
   kube_scheduler = true
+  alert_manager = true
   grafana_ingress_class = "nginx"
   grafana_ingress_host = "monitoring.example.com"
   grafana_ingress_basic_auth_username = "admin"

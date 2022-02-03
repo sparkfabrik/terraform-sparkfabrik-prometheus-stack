@@ -6,7 +6,6 @@ locals {
   app_name = "kube-prometheus-stack"
   adapter_app_name = "prometheus-adapter"
   prometheus_service_name = "kube-prometheus-stack-prometheus"
-  auth_realm = var.grafana_ingress_basic_auth_message
 }
 
 data "template_file" "kube_prometheus_stack_config" {
@@ -28,6 +27,7 @@ data "template_file" "kube_prometheus_stack_config" {
       kube_etcd = var.kube_etcd
       kube_controller_manager = var.kube_controller_manager
       kube_scheduler = var.kube_scheduler
+      alert_manager = var.alert_manager
     }
   )
 }
@@ -87,12 +87,12 @@ resource "helm_release" "kube_prometheus_stack" {
 
   set {
     name = "grafana.ingress.annotations.nginx\\.ingress\\.kubernetes\\.io/auth-realm"
-    value = local.auth_realm
+    value = var.grafana_ingress_basic_auth_message
   }
 
   set {
     name = "grafana.ingress.annotations.nginx\\.ingress\\.kubernetes\\.io/auth-secret"
-    value = "${var.namespace}/${kubernetes_secret.kube_prometheus_ingress_auth.0.metadata.0.name}"
+    value = "${var.namespace}/${kubernetes_secret.kube_prometheus_ingress_auth[0].metadata[0].name}"
   }
 
   set {
