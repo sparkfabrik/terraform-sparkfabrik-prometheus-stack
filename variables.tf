@@ -15,12 +15,6 @@ variable "prometheus_pv_size" {
   default = "100Gi"
 }
 
-variable "prometheus_install_adapter" {
-  type = bool
-  description = "Enable Prometheus Adapter"
-  default = false
-}
-
 variable "prometheus_adapter_chart_version" {
   type = string
   description = "Chart version Prometheus Adapter"
@@ -34,11 +28,12 @@ variable "regcred" {
 
 variable "storage_class_name" {
   type = string
+  description = "Storage class name which will be used for the `PersistentVolumes` for Prometheus and Grafana"
   default = ""
 }
 
 variable "prometheus_resources" {
-  type        = any
+  type        = object({ cpu_requests = string, memory_requests = string })
   description = "Prometheus resource"
   default     = {
                   cpu_requests = "",
@@ -47,7 +42,7 @@ variable "prometheus_resources" {
 }
 
 variable "prometheus_operator_resources" {
-  type        = any
+  type        = object({ cpu_requests = string, memory_requests = string })
   description = "PrometheusOperetor resource"
   default     = {
                   cpu_requests = "",
@@ -56,7 +51,7 @@ variable "prometheus_operator_resources" {
 }
 
 variable "prometheus_adapter_resources" {
-  type        = any
+  type        = object({ cpu_requests = string, memory_requests = string })
   description = "PrometheusAdapter resource"
   default     = {
                   cpu_requests = "",
@@ -124,7 +119,7 @@ variable "grafana_cert_manager_secret_name" {
 }
 
 variable "grafana_resources" {
-  type        = any
+  type        = object({ cpu_requests = string, memory_requests = string })
   description = "Grafana resource"
   default     = {
                   cpu_requests = "",

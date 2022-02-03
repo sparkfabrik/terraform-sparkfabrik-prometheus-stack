@@ -19,13 +19,13 @@ grafana:
     enabled: ${grafana_ingress_enabled}
     annotations:
       kubernetes.io/ingress.class: ${ingress_class}
-      %{~ if grafana_cert_manager_enabled == 1 ~}
+      %{~ if trimspace(grafana_cluster_issuer_name) != "" ~}
       cert-manager.io/cluster-issuer: "${grafana_cluster_issuer_name}"
       acme.cert-manager.io/http01-edit-in-place: "true"
       %{~ endif ~}
     hosts:
       - ${grafana_ingress_host}
-    %{~ if cert_manager_enabled == 1 ~}
+    %{~ if trimspace(grafana_cluster_issuer_name) != "" && trimspace(grafana_cert_manager_secret_name) != "" ~}
     tls:
       - secretName: ${grafana_cert_manager_secret_name}
         hosts:
