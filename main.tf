@@ -13,7 +13,6 @@ data "template_file" "kube_prometheus_stack_config" {
     "${path.module}/values/kube-prometheus-stack.yml",
     {
       storage_class_name = var.storage_class_name
-      pull_secrets = var.pull_secrets
       regcred = var.regcred
       grafana_cert_manager_secret_name = var.grafana_cert_manager_secret_name
       grafana_ingress_host = var.grafana_ingress_host
