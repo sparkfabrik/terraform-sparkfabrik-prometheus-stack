@@ -18,7 +18,7 @@ rules:
   external: []
 
 resources:
-  %{~ if prometheus_adapter_resources != {} ~}
+  %{~ if prometheus_adapter_resources.cpu_requests != "" && prometheus_adapter_resources.memory_requests != "" ~}
   requests:
     cpu: ${prometheus_adapter_resources.cpu_requests}
     memory: ${prometheus_adapter_resources.memory_requests}

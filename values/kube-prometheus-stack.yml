@@ -6,31 +6,33 @@
 ##
 
 global:
-  %{~ if pull_secrets == true ~}
+  %{~ if trimspace(regcred) != "" ~}
   imagePullSecrets:
     - name: ${regcred}
   %{~ endif ~}
 ## Using default values from https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml
 ##
 grafana:
+  %{~ if trimspace(grafana_ingress_host) != "" ~}
   ingress:
     ## If true, Grafana Ingress will be created
     ##
-    enabled: ${grafana_ingress_enabled}
+    enabled: true 
     annotations:
       kubernetes.io/ingress.class: ${ingress_class}
-      %{~ if cert_manager_enabled == 1 ~}
-      cert-manager.io/cluster-issuer: "${cluster_issuer_name}"
+      %{~ if trimspace(grafana_cluster_issuer_name) != "" ~}
+      cert-manager.io/cluster-issuer: "${grafana_cluster_issuer_name}"
       acme.cert-manager.io/http01-edit-in-place: "true"
       %{~ endif ~}
     hosts:
-      - ${ingress_host}
-      %{~ if cert_manager_enabled == 1 ~}
+      - ${grafana_ingress_host}
+    %{~ if trimspace(grafana_cluster_issuer_name) != "" && trimspace(grafana_cert_manager_secret_name) != "" ~}
     tls:
-      - secretName: ${secret_name}
+      - secretName: ${grafana_cert_manager_secret_name}
         hosts:
-          - ${ingress_host}
-      %{~ endif ~}
+          - ${grafana_ingress_host}
+    %{~ endif ~}
+  %{~ endif ~}
   resources:
   %{~ if grafana_resources.cpu_requests != "" && grafana_resources.memory_requests != "" ~}
     requests:
@@ -43,13 +45,13 @@ grafana:
     storageClassName: ${storage_class_name}
     %{~ endif ~}
     size: ${grafana_pv_size}
-  %{~ if prometheus_operator_resources.cpu_requests != "" && prometheus_operator_resources.memory_requests != "" ~}
+%{~ if prometheus_operator_resources.cpu_requests != "" && prometheus_operator_resources.memory_requests != "" ~}
 prometheusOperator:
   resources:
     requests:
       cpu: ${prometheus_operator_resources.cpu_requests}
       memory: ${prometheus_operator_resources.memory_requests}
-  %{~ endif ~}
+%{~ endif ~}
 
 prometheus:
   prometheusSpec:
@@ -58,7 +60,7 @@ prometheus:
       requests:
         cpu: ${prometheus_resources.cpu_requests}
         memory: ${prometheus_resources.memory_requests}
-  %{~ endif ~}  
+  %{~ endif ~}
     storageSpec:
       volumeClaimTemplate:
         spec:
@@ -80,3 +82,6 @@ kubeControllerManager:
 # Disable Scheduler metrics
 kubeScheduler:
   enabled: ${kube_scheduler}
+
+alertmanager:
+  enabled: ${alert_manager}

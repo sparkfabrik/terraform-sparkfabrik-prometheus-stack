@@ -1,18 +1,23 @@
 module "kube_prometheus_stack" {
   source = "sparkfabrik/terraform-sparkfabrik-prometheus-stack"
-  namespace = "kube-prometheus-stack"
-  grafana_pv_size = "20"
-  prometheus_pv_size = "20"
-  chart_version = "v30.2.0"
-  ingress_host = "monitoring.example.com"
-  basic_auth_username = "admin"
-  cluster_issuer_name = "prod-certmanager"
-  install_adapter = "true"
-  adapter_chart_version = "3.0.1"
-  regcred = "true"
-  pull_secrets = "docker"
-  secret_name = "monitoring-tls"
+  prometheus_stack_chart_version = "32.0.0"
+  prometheus_adapter_chart_version = "3.0.1"
+  namespace = "prometheus-stack"
+  prometheus_pv_size = "10Gi"
+  regcred = ""
+  kube_etcd = true
+  kube_controller_manager = true
+  kube_scheduler = true
+  alert_manager = true
+  grafana_ingress_class = "nginx"
+  grafana_ingress_host = "monitoring.example.com"
+  grafana_ingress_basic_auth_username = "admin"
+  grafana_ingress_basic_auth_message = "Authentication Required"
+  grafana_cert_manager_cluster_issuer_name = "production-tls"
+  grafana_cert_manager_secret_name = "monitoring-tls"
+  grafana_pv_size = "10Gi"
   storage_class_name = "gp2"
+
   prometheus_resources = {
     cpu_requests    = "50m"
     memory_requests = "1Gi"
@@ -29,5 +34,4 @@ module "kube_prometheus_stack" {
     cpu_requests    = "500m"
     memory_requests = "1Gi"
   }
-  company = "Sparkfabrik"
 }
