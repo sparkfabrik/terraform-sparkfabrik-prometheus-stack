@@ -21,7 +21,6 @@ variable "prometheus_pv_size" {
   default = "100Gi"
 }
 
-
 variable "regcred" {
   type = string
   description = "Name of the secret docker credential"
@@ -118,6 +117,7 @@ variable "grafana_cert_manager_cluster_issuer_name" {
 variable "grafana_cert_manager_secret_name" {
   type = string
   description = "cert-manager tls secret name (as this is an helm values file we should pass it manually, we cannot use the release name)"
+  default = "grafana-general-tls"
 }
 
 variable "grafana_resources" {
