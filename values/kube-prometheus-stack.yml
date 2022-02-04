@@ -5,11 +5,11 @@
 ## Declare variables to be passed into your templates.
 ##
 
+%{~ if trimspace(regcred) != "" ~}
 global:
-  %{~ if trimspace(regcred) != "" ~}
   imagePullSecrets:
     - name: ${regcred}
-  %{~ endif ~}
+%{~ endif ~}
 ## Using default values from https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml
 ##
 grafana:
@@ -19,22 +19,22 @@ grafana:
     ##
     enabled: true 
     annotations:
-      kubernetes.io/ingress.class: ${ingress_class}
+      kubernetes.io/ingress.class: ${grafana_ingress_class}
       %{~ if trimspace(grafana_cluster_issuer_name) != "" ~}
       cert-manager.io/cluster-issuer: "${grafana_cluster_issuer_name}"
       acme.cert-manager.io/http01-edit-in-place: "true"
       %{~ endif ~}
     hosts:
       - ${grafana_ingress_host}
-    %{~ if trimspace(grafana_cluster_issuer_name) != "" && trimspace(grafana_cert_manager_secret_name) != "" ~}
+    %{~ if trimspace(grafana_cluster_issuer_name) != "" ~}
     tls:
       - secretName: ${grafana_cert_manager_secret_name}
         hosts:
           - ${grafana_ingress_host}
     %{~ endif ~}
   %{~ endif ~}
-  resources:
   %{~ if grafana_resources.cpu_requests != "" && grafana_resources.memory_requests != "" ~}
+  resources:
     requests:
       cpu: ${grafana_resources.cpu_requests}
       memory: ${grafana_resources.memory_requests}
@@ -45,7 +45,7 @@ grafana:
     storageClassName: ${storage_class_name}
     %{~ endif ~}
     size: ${grafana_pv_size}
-%{~ if prometheus_operator_resources.cpu_requests != "" && prometheus_operator_resources.memory_requests != "" ~}
+%{~ if prometheus_operator_resources.cpu_requests != "" && prometheus_operator_resources.memory_requests != "" }
 prometheusOperator:
   resources:
     requests:
