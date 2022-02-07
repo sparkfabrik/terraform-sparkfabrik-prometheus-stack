@@ -1,104 +1,52 @@
 variable "prometheus_stack_chart_version" {
   type = string
-  description = "Chart version Prometheus-stack"
+  description = "Chart version Prometheus-stack."
 }
 
 variable "prometheus_adapter_chart_version" {
   type = string
-  description = "Chart version Prometheus Adapter. If the variable is left empty, the Prometheus Adapter Chart will not be installed"
+  description = "Chart version Prometheus Adapter. If the variable is left empty, the Prometheus Adapter Chart will not be installed."
   default = ""
 }
 
 variable "namespace" {
   type = string
-  description = "This is the namespace used to install kube-prometheus-stack, it will be created."
+  description = "This is the namespace used to install kube-prometheus-stack."
   default = "kube-prometheus-stack"
-}
-
-variable "prometheus_pv_size" {
-  type = string
-  description = "Prometheus PV size"
-  default = "100Gi"
 }
 
 variable "regcred" {
   type = string
-  description = "Name of the secret docker credential"
+  description = "Name of the secret of the docker credentials."
 }
 
-variable "storage_class_name" {
+variable "grafana_ingress_host" {
   type = string
-  description = "Storage class name which will be used for the `PersistentVolumes` for Prometheus and Grafana"
+  description = "Grafana ingress host. If the variable is left empty, the ingress will not be enabled."
   default = ""
 }
 
-variable "prometheus_resources" {
-  type        = object({ cpu_requests = string, memory_requests = string })
-  description = "Prometheus resource"
-  default     = {
-                  cpu_requests = "",
-                  memory_requests = ""
-                }
-}
-
-variable "prometheus_operator_resources" {
-  type        = object({ cpu_requests = string, memory_requests = string })
-  description = "PrometheusOperetor resource"
-  default     = {
-                  cpu_requests = "",
-                  memory_requests = ""
-                }
-}
-
-variable "prometheus_adapter_resources" {
-  type        = object({ cpu_requests = string, memory_requests = string })
-  description = "PrometheusAdapter resource"
-  default     = {
-                  cpu_requests = "",
-                  memory_requests = ""
-                }
-}
-
-variable "kube_etcd" {
-  type = bool
-  description = "Component scraping etcd"
-  default = false
-}
-
-variable "kube_controller_manager" {
-  type = bool
-  description = "Component scraping the kube controller manager"
-  default = false
-}
-
-variable "kube_scheduler" {
-  type = bool
-  description = "Component scraping kube scheduler"
-  default = false
-}
-
-variable "alert_manager" {
-  type = bool
-  description = "Deploy alertmanager"
-  default = false
-}
-
-# Grafana config.
 variable "grafana_ingress_class" {
   type = string
   description = "Ingress Class"
   default = "nginx"
 }
 
-variable "grafana_ingress_host" {
+variable "grafana_cluster_issuer_name" {
   type = string
-  description = "Grafana ingress host. If the variable left empty, the ingress not be enabled"
+  description = "Resource representing the cluster issuer of cert-manager (used to deploy a TLS certificate for Grafana ingress). If the variable is left empty, the annotations will not be added."
+  default = ""
+}
+
+variable "grafana_tls_secret_name" {
+  type = string
+  description = "TLS secret name. If the variable is left empty, the value will be filled by the module using default value."
   default = ""
 }
 
 variable "grafana_ingress_basic_auth_username" {
   type = string
-  description = "Grafana basic auth username (if not empty it will be activated)."
+  description = "Grafana basic auth username. If the variable is left empty, the basic auth will not be activated and you will use only the standard Grafana authentication."
   default = "admin"
 }
 
@@ -108,29 +56,14 @@ variable "grafana_ingress_basic_auth_message" {
   default = "Authentication Required"
 }
 
-variable "grafana_cert_manager_cluster_issuer_name" {
+variable "prometheus_stack_additional_values" {
   type = string
-  description = "Resource representing the cluster issuer of cert-manager (used to deploy a TLS cert for Grafana ingress). If the variable is left empty, the annotations will not be added"
+  description = "Override values for kube-prometheus-stack release. If this variable is configured, its content will be merged with the other values."
   default = ""
 }
 
-variable "grafana_cert_manager_secret_name" {
+variable "prometheus_adapter_additional_values" {
   type = string
-  description = "cert-manager tls secret name (as this is an helm values file we should pass it manually, we cannot use the release name)"
-  default = "grafana-general-tls"
-}
-
-variable "grafana_resources" {
-  type        = object({ cpu_requests = string, memory_requests = string })
-  description = "Grafana resource"
-  default     = {
-                  cpu_requests = "",
-                  memory_requests = ""
-                }
-}
-
-variable "grafana_pv_size" {
-  type = string
-  description = "Grafana PV size"
-  default = "10Gi"
+  description = "Override values for prometheus-adapter release. If this variable is configured, its content will be merged with the other values."
+  default = ""
 }

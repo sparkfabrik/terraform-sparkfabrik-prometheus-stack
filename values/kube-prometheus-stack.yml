@@ -5,11 +5,12 @@
 ## Declare variables to be passed into your templates.
 ##
 
-%{~ if trimspace(regcred) != "" ~}
+%{~ if trimspace(regcred) != "" }
 global:
   imagePullSecrets:
     - name: ${regcred}
 %{~ endif }
+
 ## Using default values from https://github.com/grafana/helm-charts/blob/main/charts/grafana/values.yaml
 ##
 grafana:
@@ -24,64 +25,45 @@ grafana:
       cert-manager.io/cluster-issuer: "${grafana_cluster_issuer_name}"
       acme.cert-manager.io/http01-edit-in-place: "true"
       %{~ endif ~}
+      %{~ if trimspace(grafana_ingress_basic_auth_username) != "" ~}
+      nginx.ingress.kubernetes.io/auth-type: "basic"
+      nginx.ingress.kubernetes.io/auth-realm: "${grafana_ingress_basic_auth_message}"
+      nginx.ingress.kubernetes.io/auth-secret: "${grafana_ingress_basic_auth_secret}"
+      %{~ endif ~}
     hosts:
       - ${grafana_ingress_host}
     %{~ if trimspace(grafana_cluster_issuer_name) != "" ~}
     tls:
-      - secretName: ${grafana_cert_manager_secret_name}
+      - secretName: ${cert_manager_secret_name}
         hosts:
           - ${grafana_ingress_host}
     %{~ endif ~}
   %{~ endif ~}
-  %{~ if grafana_resources.cpu_requests != "" && grafana_resources.memory_requests != "" ~}
-  resources:
-    requests:
-      cpu: ${grafana_resources.cpu_requests}
-      memory: ${grafana_resources.memory_requests}
-  %{~ endif ~}
   persistence:
     enabled: true
-    %{~ if trimspace(storage_class_name) != "" ~}
-    storageClassName: ${storage_class_name}
-    %{~ endif ~}
-    size: ${grafana_pv_size}
-%{~ if prometheus_operator_resources.cpu_requests != "" && prometheus_operator_resources.memory_requests != "" }
-prometheusOperator:
-  resources:
-    requests:
-      cpu: ${prometheus_operator_resources.cpu_requests}
-      memory: ${prometheus_operator_resources.memory_requests}
-%{~ endif ~}
+    size: 10Gi
 
 prometheus:
   prometheusSpec:
-  %{~ if prometheus_resources.cpu_requests != "" && prometheus_resources.memory_requests != "" ~}
-    resources:
-      requests:
-        cpu: ${prometheus_resources.cpu_requests}
-        memory: ${prometheus_resources.memory_requests}
-  %{~ endif ~}
     storageSpec:
       volumeClaimTemplate:
         spec:
-        %{~ if trimspace(storage_class_name) != "" ~}
-          storageClassName: ${storage_class_name}
-        %{~ endif ~}
           resources:
             requests:
-              storage: ${prometheus_pv_size}
+              storage: 100Gi
 
 # Disable Etcd metrics
 kubeEtcd:
-  enabled: ${kube_etcd}
+  enabled: false
 
 # Disable Controller metrics
 kubeControllerManager:
-  enabled: ${kube_controller_manager}
+  enabled: false
 
 # Disable Scheduler metrics
 kubeScheduler:
-  enabled: ${kube_scheduler}
+  enabled: false
 
+# Disable alertmanager
 alertmanager:
-  enabled: ${alert_manager}
+  enabled: false
