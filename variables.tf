@@ -134,3 +134,12 @@ variable "grafana_pv_size" {
   description = "Grafana PV size"
   default = "10Gi"
 }
+
+variable "kube_state_metrics_resources" {
+  type        = object({ cpu_requests = string, memory_requests = string })
+  description = "Kube state mestrics resource"
+  default     = {
+                  cpu_requests = "",
+                  memory_requests = ""
+                }
+}

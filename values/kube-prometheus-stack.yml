@@ -71,6 +71,13 @@ prometheus:
             requests:
               storage: ${prometheus_pv_size}
 
+%{~ if kube_state_metrics_resources.cpu_requests != "" && kube_state_metrics_resources.memory_requests != "" }
+kube-state-metrics:
+  resources:
+    cpu: ${kube_state_metrics_resources.cpu_requests}
+    memory: ${kube_state_metrics_resources.memory_requests}
+%{~ endif ~}
+
 # Disable Etcd metrics
 kubeEtcd:
   enabled: ${kube_etcd}

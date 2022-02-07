@@ -27,6 +27,7 @@ data "template_file" "kube_prometheus_stack_config" {
       kube_controller_manager = var.kube_controller_manager
       kube_scheduler = var.kube_scheduler
       alert_manager = var.alert_manager
+      kube_state_metrics_resources = var.kube_state_metrics_resources
     }
   )
 }

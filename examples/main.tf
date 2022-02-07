@@ -34,4 +34,8 @@ module "kube_prometheus_stack" {
     cpu_requests    = "500m"
     memory_requests = "1Gi"
   }
+  kube_state_metrics_resources = {
+      cpu_requests    = "2m"
+      memory_requests = "64Mi"
+  }
 }

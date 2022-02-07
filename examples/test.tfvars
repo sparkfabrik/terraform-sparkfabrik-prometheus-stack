@@ -32,3 +32,7 @@ grafana_resources = {
     memory_requests = "1Gi"
 }
 grafana_pv_size = "20"
+kube_state_metrics_resources = {
+    cpu_requests    = "2m"
+    memory_requests = "64Mi"
+}
