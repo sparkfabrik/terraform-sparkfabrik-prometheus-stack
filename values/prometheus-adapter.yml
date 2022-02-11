@@ -1,0 +1,4 @@
+## Custom values for k8s-prometheus-adapter.
+## Refs: https://github.com/helm/charts/blob/master/stable/prometheus-adapter/values.yaml
+prometheus:
+  url: http://${prometheus_internal_url}

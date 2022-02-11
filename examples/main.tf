@@ -1,37 +1,33 @@
+locals {
+  prometheus_stack_additional_values = yamlencode({
+    commonLabels: {
+      label1: "this-is-my-first-label"
+      label2: "this-is-my-second-label"
+    }
+  })
+  prometheus_adapter_additional_values = yamlencode({
+    resources: {
+      requests: {
+        cpu: "10m",
+        memory: "32Mi"
+      }
+    }
+  })
+}
+
 module "kube_prometheus_stack" {
   source = "sparkfabrik/terraform-sparkfabrik-prometheus-stack"
-  prometheus_stack_chart_version = "31.0.0"
-  prometheus_adapter_chart_version = "3.0.1"
-  namespace = "prometheus-stack"
-  prometheus_pv_size = "10Gi"
-  regcred = ""
-  kube_etcd = true
-  kube_controller_manager = true
-  kube_scheduler = true
-  alert_manager = true
-  grafana_ingress_class = "nginx"
-  grafana_ingress_host = "monitoring.example.com"
-  grafana_ingress_basic_auth_username = "admin"
-  grafana_ingress_basic_auth_message = "Authentication Required"
-  grafana_cert_manager_cluster_issuer_name = "production-tls"
-  grafana_cert_manager_secret_name = "monitoring-tls"
-  grafana_pv_size = "10Gi"
-  storage_class_name = "gp2"
 
-  prometheus_resources = {
-    cpu_requests    = "50m"
-    memory_requests = "1Gi"
-  }
-  prometheus_operator_resources = {
-    cpu_requests    = "50m"
-    memory_requests = "1Gi"
-  }
-  grafana_resources = {
-    cpu_requests    = "50m"
-    memory_requests = "1Gi"
-  }
-  prometheus_adapter_resources = {
-    cpu_requests    = "500m"
-    memory_requests = "1Gi"
-  }
+  prometheus_stack_chart_version          = var.prometheus_stack_chart_version
+  prometheus_adapter_chart_version        = var.prometheus_adapter_chart_version
+  namespace                               = var.namespace
+  regcred                                 = var.regcred
+  grafana_ingress_host                    = var.grafana_ingress_host
+  grafana_ingress_class                   = var.grafana_ingress_class
+  grafana_cluster_issuer_name             = var.grafana_cluster_issuer_name
+  grafana_tls_secret_name                 = var.grafana_tls_secret_name
+  grafana_ingress_basic_auth_username     = var.grafana_ingress_basic_auth_username
+  grafana_ingress_basic_auth_message      = var.grafana_ingress_basic_auth_message
+  prometheus_stack_additional_values      = local.prometheus_stack_additional_values
+  prometheus_adapter_additional_values    = local.prometheus_adapter_additional_values
 }
