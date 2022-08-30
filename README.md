@@ -8,9 +8,9 @@ This module could also install the [Prometheus Adapter](https://github.com/helm/
 
 This module is provided without any kind of warranty and is GPL3 licensed.
 
-# Configuration Helm and Kubernetes providers
+## Configuration Helm and Kubernetes providers
 
-```
+```tf
 provider "kubernetes" {
   host                   = # reference cluster endpoint
   cluster_ca_certificate = # reference cluster ca certificate base64decode
@@ -26,9 +26,9 @@ provider "helm" {
 }
 ```
 
-# Usage
+## Usage
 
-```
+```tf
 locals {
   prometheus_stack_additional_values = yamlencode({
     commonLabels: {

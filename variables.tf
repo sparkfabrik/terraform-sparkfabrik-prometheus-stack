@@ -67,3 +67,9 @@ variable "prometheus_adapter_additional_values" {
   description = "Override values for prometheus-adapter release. If this variable is configured, its content will be merged with the other values."
   default = ""
 }
+
+variable "prometheus_path_crd" {
+  type    = string
+  description = "Overwrite prometheus operator CRDs. If queta variable is configured with the CRDs path the content will overwrite the existing one. By default, version 0.58.0 is installed."
+  default = ""
+}
