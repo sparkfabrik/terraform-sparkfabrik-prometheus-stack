@@ -18,9 +18,11 @@ grafana:
   ingress:
     ## If true, Grafana Ingress will be created
     ##
-    enabled: true 
+    enabled: true
+    %{~ if trimspace(grafana_ingress_class) != "" ~}
+    ingressClassName: ${grafana_ingress_class}
+    %{~ endif ~}
     annotations:
-      kubernetes.io/ingress.class: ${grafana_ingress_class}
       %{~ if trimspace(grafana_cluster_issuer_name) != "" ~}
       cert-manager.io/cluster-issuer: "${grafana_cluster_issuer_name}"
       acme.cert-manager.io/http01-edit-in-place: "true"
