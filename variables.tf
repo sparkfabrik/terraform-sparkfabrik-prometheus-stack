@@ -56,7 +56,7 @@ variable "grafana_ingress_basic_auth_username" {
   default = "admin"
 }
 
-variable "grafana_username" {
+variable "grafana_admin_user" {
   type = string
   description = "Grafana basic auth username. If the variable is left empty, the basic auth will not be activated and you will use only the standard Grafana authentication."
   default = "admin"
