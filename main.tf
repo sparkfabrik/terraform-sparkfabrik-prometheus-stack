@@ -36,9 +36,9 @@ resource "kubernetes_secret" "kube_prometheus_ingress_auth" {
     }
   }
   data = {
-    username = var.grafana_ingress_basic_auth_username
-    password = random_password.basic_auth_password.result
-    auth     = "${var.grafana_username}:{PLAIN}${random_password.grafana_admin_password.result}"
+    username = var.grafana_username
+    password = random_password.grafana_admin_password.result
+    auth     = var.grafana_ingress_basic_auth_username != "" ? "${var.grafana_ingress_basic_auth_username}:{PLAIN}${random_password.basic_auth_password.result}" : ""
   }
 
   depends_on = [resource.kubernetes_namespace.kube_prometheus_stack_namespace]
