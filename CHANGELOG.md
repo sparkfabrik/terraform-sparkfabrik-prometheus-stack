@@ -13,12 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add `create_namespace` variable to create namespace (default: `true`).
-- Add `grafana_admin_user` variables (default: `admin`).
+- Add `create_namespace` variable to disable namespace creation, default: `true`.
+- Add `grafana_admin_user` variable to specify different user, default is `admin`).
 
 ### Changed
 
-- Generate different `grafana` and `basic_auth` passwords,
+- Generate different `grafana` and `basic_auth` passwords.
 
 ## [1.1.0] - 2022-09-07
 
