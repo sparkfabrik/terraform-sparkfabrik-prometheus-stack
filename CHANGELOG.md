@@ -13,8 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add `create_namespace` variable to disable namespace creation, default: `true`.
-- Add `grafana_admin_user` variable to specify different user, default is `admin`).
+- `create_namespace` variable to disable namespace creation, default: `true`.
+- `grafana_admin_user` variable to specify different user, default is `admin`.
 
 ### Changed
 
