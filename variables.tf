@@ -11,7 +11,7 @@ variable "prometheus_adapter_chart_version" {
 
 variable "create_namespace" {
   type = bool
-  description = "If true, the namespace will be created."
+  description = "If true, the namespace will be created. If false, a namespace called as specified in you var.namespace variable, must exists in your Kubernetes cluster."
   default = true  
 }
 
