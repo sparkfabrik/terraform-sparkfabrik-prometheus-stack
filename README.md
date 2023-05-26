@@ -64,3 +64,7 @@ module "kube_prometheus_stack" {
   prometheus_adapter_additional_values    = local.prometheus_adapter_additional_values
 }
 ```
+
+# Updgrade from 1.1.0 to 1.2.0
+ 
+Upgrading to 1.2.0 from 1.1.0 will update the basic auth pasword and update the secret value.
