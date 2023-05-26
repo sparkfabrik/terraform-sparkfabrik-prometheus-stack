@@ -28,8 +28,6 @@ resource "random_password" "grafana_admin_password" {
 }
 
 resource "kubernetes_secret" "kube_prometheus_ingress_auth" {
-  count = trimspace(var.grafana_ingress_basic_auth_username) != "" ? 1 : 0
-
   metadata {
     name      = "${local.app_name}-basic-auth"
     namespace = var.namespace
