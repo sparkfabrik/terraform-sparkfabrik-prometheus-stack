@@ -28,6 +28,8 @@ resource "random_password" "grafana_admin_password" {
 }
 
 resource "kubernetes_secret" "kube_prometheus_ingress_auth" {
+  count = trimspace(var.grafana_ingress_basic_auth_username) != "" ? 1 : 0
+
   metadata {
     name      = "${local.app_name}-basic-auth"
     namespace = var.namespace
@@ -36,9 +38,9 @@ resource "kubernetes_secret" "kube_prometheus_ingress_auth" {
     }
   }
   data = {
-    username = var.grafana_username
-    password = random_password.grafana_admin_password.result
-    auth     = var.grafana_ingress_basic_auth_username != "" ? "${var.grafana_ingress_basic_auth_username}:{PLAIN}${random_password.basic_auth_password.result}" : ""
+    username = var.grafana_ingress_basic_auth_username
+    password = random_password.basic_auth_password.result
+    auth     = "${var.grafana_ingress_basic_auth_username}:{PLAIN}${random_password.basic_auth_password.result}"
   }
 
   depends_on = [resource.kubernetes_namespace.kube_prometheus_stack_namespace]
@@ -55,7 +57,7 @@ data "template_file" "kube_prometheus_stack_config" {
       cert_manager_secret_name            = local.cert_manager_secret_name
       grafana_ingress_basic_auth_username = var.grafana_ingress_basic_auth_username
       grafana_ingress_basic_auth_message  = var.grafana_ingress_basic_auth_message
-      grafana_ingress_basic_auth_secret   = trimspace(var.grafana_ingress_basic_auth_username) != "" ? "${var.namespace}/${kubernetes_secret.kube_prometheus_ingress_auth.metadata[0].name}" : ""
+      grafana_ingress_basic_auth_secret   = trimspace(var.grafana_ingress_basic_auth_username) != "" ? "${var.namespace}/${kubernetes_secret.kube_prometheus_ingress_auth[0].metadata[0].name}" : ""
     }
   )
 }
