@@ -67,4 +67,4 @@ module "kube_prometheus_stack" {
 
 # Updgrade from 1.1.0 to 1.2.0
  
-Upgrading to 1.2.0 from 1.1.0 will update the basic auth pasword and update the secret value.
+Upgrading to 1.2.0 from 1.1.0 will update the basic auth password and update the secret value.
