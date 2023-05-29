@@ -76,7 +76,7 @@ To avoid destruction of the Helm release, you will need to use the `moved` resou
 
 ```
 moved {
-  from = kubernetes_namespace.kube_prometheus_stack_namespace
-  to   = kubernetes_namespace.kube_prometheus_stack_namespace[0]
+  from = module.MODULE_NAME.kubernetes_namespace.kube_prometheus_stack_namespace
+  to   = moudle.MODULE_NAME.kubernetes_namespace.kube_prometheus_stack_namespace[0]
 }
 ```
