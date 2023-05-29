@@ -70,7 +70,8 @@ module "kube_prometheus_stack" {
 Upgrading to 2.0.0 from 1.1.0 will destroy and recreate the basic auth password, which is now different from Grafana admin password, 
 and will update the relative basic auth secret value.
 
-Upgrading to version 2.0.0 will cause the destruction of the namespace, which now becomes an array. This implies that it will have to destroy the helm release.
+Upgrading to version 2.0.0 will also cause the destruction of the namespace, which now becomes an array.
+This implies that it will have to destroy also the Helm release.
 To avoid destruction of the helm release, you will need to add a move resource to terraform as below:
 
 ```
