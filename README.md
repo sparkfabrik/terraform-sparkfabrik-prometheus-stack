@@ -64,3 +64,19 @@ module "kube_prometheus_stack" {
   prometheus_adapter_additional_values    = local.prometheus_adapter_additional_values
 }
 ```
+
+# Updgrade from 1.1.0 to 2.0.0
+ 
+Upgrading to 2.0.0 from 1.1.0 will destroy and recreate the basic auth password, which is now different from Grafana admin password, 
+and will update the relative basic auth secret value.
+
+Upgrading to version 2.0.0 will also cause the destruction of the namespace, which now becomes an array.
+This implies that it will have to destroy also the Helm release.
+To avoid destruction of the Helm release, you will need to use the `moved` resource, to move the namespace as shown below:
+
+```
+moved {
+  from = module.MODULE_NAME.kubernetes_namespace.kube_prometheus_stack_namespace
+  to   = moudle.MODULE_NAME.kubernetes_namespace.kube_prometheus_stack_namespace[0]
+}
+```

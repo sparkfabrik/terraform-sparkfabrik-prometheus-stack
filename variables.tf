@@ -9,6 +9,12 @@ variable "prometheus_adapter_chart_version" {
   default = ""
 }
 
+variable "create_namespace" {
+  type = bool
+  description = "If true, the namespace will be created. If false, a namespace called as specified in you var.namespace variable, must exists in your Kubernetes cluster."
+  default = true  
+}
+
 variable "namespace" {
   type = string
   description = "This is the namespace used to install kube-prometheus-stack."
@@ -45,6 +51,12 @@ variable "grafana_tls_secret_name" {
 }
 
 variable "grafana_ingress_basic_auth_username" {
+  type = string
+  description = "Grafana basic auth username. If the variable is left empty, the basic auth will not be activated and you will use only the standard Grafana authentication."
+  default = "admin"
+}
+
+variable "grafana_admin_user" {
   type = string
   description = "Grafana basic auth username. If the variable is left empty, the basic auth will not be activated and you will use only the standard Grafana authentication."
   default = "admin"
