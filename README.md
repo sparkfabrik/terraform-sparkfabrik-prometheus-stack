@@ -72,7 +72,7 @@ and will update the relative basic auth secret value.
 
 Upgrading to version 2.0.0 will also cause the destruction of the namespace, which now becomes an array.
 This implies that it will have to destroy also the Helm release.
-To avoid destruction of the helm release, you will need to add a move resource to terraform as below:
+To avoid destruction of the Helm release, you will need to use the `moved` resource, to move the namespace as shown below:
 
 ```
 moved {
