@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- `create_namespace` variable to disable namespace creation, default: `true`.
+- [BREAKING] - added a `create_namespace` variable to disable namespace creation, default: `true`. The namespace is now an array resource. To prevent namespace recreation, use a move resource. See README.md for an example.
 - `grafana_admin_user` variable to specify different user, default is `admin`.
 
 ### Changed
