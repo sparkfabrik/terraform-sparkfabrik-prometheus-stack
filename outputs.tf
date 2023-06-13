@@ -4,7 +4,7 @@ output "grafana_admin_password" {
   description = "Grafana administrator password"
 }
 
-output "grafana_admin_username" {
+output "grafana_admin_user" {
   value = var.grafana_admin_user
   description = "Grafana administrator username"
 }
