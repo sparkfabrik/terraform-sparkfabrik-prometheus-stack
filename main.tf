@@ -1,11 +1,42 @@
 locals {
-  app_name                 = "kube-prometheus-stack"
-  adapter_app_name         = "prometheus-adapter"
+  app_name_stack           = "kube-prometheus-stack"
+  app_name_adapter         = "prometheus-adapter"
   prometheus_service_name  = "kube-prometheus-stack-prometheus"
-  cert_manager_secret_name = trimspace(var.grafana_tls_secret_name) != "" ? var.grafana_tls_secret_name : join("-", [local.app_name, "certmanager-def.tls"])
+  cert_manager_secret_name = trimspace(var.grafana_tls_secret_name) != "" ? var.grafana_tls_secret_name : join("-", [local.app_name_stack, "certmanager-def.tls"])
+
+  # Kubernetes Prometheus Stack values
+  base_kube_prometheus_stack = templatefile(
+    "${path.module}/values/kube-prometheus-stack.yml",
+    {
+      regcred                             = var.regcred
+      grafana_ingress_host                = var.grafana_ingress_host
+      grafana_ingress_class               = var.grafana_ingress_class
+      grafana_cluster_issuer_name         = var.grafana_cluster_issuer_name
+      cert_manager_secret_name            = local.cert_manager_secret_name
+      grafana_ingress_basic_auth_username = var.grafana_ingress_basic_auth_username
+      grafana_ingress_basic_auth_message  = var.grafana_ingress_basic_auth_message
+      grafana_ingress_basic_auth_secret   = trimspace(var.grafana_ingress_basic_auth_username) != "" ? "${var.namespace}/${kubernetes_secret_v1.kube_prometheus_ingress_auth[0].metadata[0].name}" : ""
+    }
+  )
+  kube_prometheus_stack_values = concat(
+    [local.base_kube_prometheus_stack],
+    var.prometheus_stack_additional_values
+  )
+
+  # Prometheus Adapter values
+  base_prometheus_adapter = templatefile(
+    "${path.module}/values/prometheus-adapter.yml",
+    {
+      prometheus_internal_url = "${local.prometheus_service_name}.${var.namespace}.svc"
+    }
+  )
+  prometheus_adapter_values = concat(
+    [local.base_prometheus_adapter],
+    var.prometheus_adapter_additional_values
+  )
 }
 
-resource "kubernetes_namespace" "kube_prometheus_stack_namespace" {
+resource "kubernetes_namespace_v1" "kube_prometheus_stack_namespace" {
   count = var.create_namespace ? 1 : 0
   metadata {
     name = var.namespace
@@ -27,14 +58,14 @@ resource "random_password" "grafana_admin_password" {
   override_special = "_%@"
 }
 
-resource "kubernetes_secret" "kube_prometheus_ingress_auth" {
+resource "kubernetes_secret_v1" "kube_prometheus_ingress_auth" {
   count = trimspace(var.grafana_ingress_basic_auth_username) != "" ? 1 : 0
 
   metadata {
-    name      = "${local.app_name}-basic-auth"
-    namespace = var.namespace
+    name      = "${local.app_name_stack}-basic-auth"
+    namespace = kubernetes_namespace_v1.kube_prometheus_stack_namespace[0].metadata[0].name
     labels = {
-      app = local.app_name
+      app = local.app_name_stack
     }
   }
   data = {
@@ -43,34 +74,17 @@ resource "kubernetes_secret" "kube_prometheus_ingress_auth" {
     auth     = "${var.grafana_ingress_basic_auth_username}:{PLAIN}${random_password.basic_auth_password.result}"
   }
 
-  depends_on = [resource.kubernetes_namespace.kube_prometheus_stack_namespace]
-}
-
-data "template_file" "kube_prometheus_stack_config" {
-  template = templatefile(
-    "${path.module}/values/kube-prometheus-stack.yml",
-    {
-      regcred                             = var.regcred
-      grafana_ingress_host                = var.grafana_ingress_host
-      grafana_ingress_class               = var.grafana_ingress_class
-      grafana_cluster_issuer_name         = var.grafana_cluster_issuer_name
-      cert_manager_secret_name            = local.cert_manager_secret_name
-      grafana_ingress_basic_auth_username = var.grafana_ingress_basic_auth_username
-      grafana_ingress_basic_auth_message  = var.grafana_ingress_basic_auth_message
-      grafana_ingress_basic_auth_secret   = trimspace(var.grafana_ingress_basic_auth_username) != "" ? "${var.namespace}/${kubernetes_secret.kube_prometheus_ingress_auth[0].metadata[0].name}" : ""
-    }
-  )
+  type = "kubernetes.io/basic-auth"
 }
 
 resource "helm_release" "kube_prometheus_stack" {
-  name             = local.app_name
-  repository       = "https://prometheus-community.github.io/helm-charts"
-  chart            = "kube-prometheus-stack"
-  namespace        = var.namespace
-  version          = var.prometheus_stack_chart_version
-  create_namespace = true
+  name       = local.app_name_stack
+  repository = "https://prometheus-community.github.io/helm-charts"
+  chart      = "kube-prometheus-stack"
+  namespace  = kubernetes_namespace_v1.kube_prometheus_stack_namespace[0].metadata[0].name
+  version    = var.prometheus_stack_chart_version
 
-  values = trimspace(var.prometheus_stack_additional_values) != "" ? [data.template_file.kube_prometheus_stack_config.template, var.prometheus_stack_additional_values] : [data.template_file.kube_prometheus_stack_config.template]
+  values = local.kube_prometheus_stack_values
 
   set_sensitive {
     name  = "grafana.adminPassword"
@@ -82,26 +96,17 @@ resource "helm_release" "kube_prometheus_stack" {
     value = var.grafana_admin_user
   }
 
-  depends_on = [resource.kubernetes_secret.kube_prometheus_ingress_auth]
-}
-
-data "template_file" "prometheus_adapter_config" {
-  template = templatefile(
-    "${path.module}/values/prometheus-adapter.yml",
-    {
-      prometheus_internal_url = "${local.prometheus_service_name}.${var.namespace}.svc"
-    }
-  )
+  depends_on = [kubernetes_secret_v1.kube_prometheus_ingress_auth]
 }
 
 resource "helm_release" "prometheus_adapter" {
   count = trimspace(var.prometheus_adapter_chart_version) != "" ? 1 : 0
 
-  name       = local.adapter_app_name
+  name       = local.app_name_adapter
   repository = "https://prometheus-community.github.io/helm-charts"
   chart      = "prometheus-adapter"
-  namespace  = var.namespace
+  namespace  = kubernetes_namespace_v1.kube_prometheus_stack_namespace[0].metadata[0].name
   version    = var.prometheus_adapter_chart_version
 
-  values = trimspace(var.prometheus_adapter_additional_values) != "" ? [data.template_file.prometheus_adapter_config.template, var.prometheus_adapter_additional_values] : [data.template_file.prometheus_adapter_config.template]
+  values = local.prometheus_adapter_values
 }

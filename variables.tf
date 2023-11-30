@@ -1,81 +1,81 @@
 variable "prometheus_stack_chart_version" {
-  type = string
+  type        = string
   description = "Chart version Prometheus-stack."
 }
 
 variable "prometheus_adapter_chart_version" {
-  type = string
+  type        = string
   description = "Chart version Prometheus Adapter. If the variable is left empty, the Prometheus Adapter Chart will not be installed."
-  default = ""
+  default     = ""
 }
 
 variable "create_namespace" {
-  type = bool
+  type        = bool
   description = "If true, the namespace will be created. If false, a namespace called as specified in you var.namespace variable, must exists in your Kubernetes cluster."
-  default = true  
+  default     = true
 }
 
 variable "namespace" {
-  type = string
+  type        = string
   description = "This is the namespace used to install kube-prometheus-stack."
-  default = "kube-prometheus-stack"
+  default     = "kube-prometheus-stack"
 }
 
 variable "regcred" {
-  type = string
+  type        = string
   description = "Name of the secret of the docker credentials."
 }
 
 variable "grafana_ingress_host" {
-  type = string
+  type        = string
   description = "Grafana ingress host. If the variable is left empty, the ingress will not be enabled."
-  default = ""
+  default     = ""
 }
 
 variable "grafana_ingress_class" {
-  type = string
+  type        = string
   description = "Ingress Class"
-  default = "nginx"
+  default     = "nginx"
 }
 
 variable "grafana_cluster_issuer_name" {
-  type = string
+  type        = string
   description = "Resource representing the cluster issuer of cert-manager (used to deploy a TLS certificate for Grafana ingress). If the variable is left empty, the annotations will not be added."
-  default = ""
+  default     = ""
 }
 
 variable "grafana_tls_secret_name" {
-  type = string
+  type        = string
   description = "TLS secret name. If the variable is left empty, the value will be filled by the module using default value."
-  default = ""
+  default     = ""
 }
 
 variable "grafana_ingress_basic_auth_username" {
-  type = string
+  type        = string
   description = "Grafana basic auth username. If the variable is left empty, the basic auth will not be activated and you will use only the standard Grafana authentication."
-  default = "admin"
+  default     = "admin"
 }
 
 variable "grafana_admin_user" {
-  type = string
+  type        = string
   description = "Grafana basic auth username. If the variable is left empty, the basic auth will not be activated and you will use only the standard Grafana authentication."
-  default = "admin"
+  default     = "admin"
 }
 
 variable "grafana_ingress_basic_auth_message" {
-  type = string
+  type        = string
   description = "Grafana basic auth message."
-  default = "Authentication Required"
+  default     = "Authentication Required"
 }
 
 variable "prometheus_stack_additional_values" {
-  type = string
-  description = "Override values for kube-prometheus-stack release. If this variable is configured, its content will be merged with the other values."
-  default = ""
+  type        = list(string)
+  description = "Override values for kube-prometheus-stack release. If this variable is not an empy list, it will be merged with the other values."
+  default     = []
 }
 
 variable "prometheus_adapter_additional_values" {
-  type = string
-  description = "Override values for prometheus-adapter release. If this variable is configured, its content will be merged with the other values."
-  default = ""
+  type        = list(string)
+  description = "Override values for prometheus-adapter release. If this variable is not an empy list, it will be merged with the other values."
+  default     = []
 }
