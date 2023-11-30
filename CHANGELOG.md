@@ -7,7 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
----
+## [3.0.0] - 2023-11-30
+
+[Compare with previous version](https://github.com/sparkfabrik/terraform-sparkfabrik-prometheus-stack/compare/2.1.0...3.0.0)
+
+### Changed
+
+- refs platform/#2586: the `prometheus_stack_additional_values` and `prometheus_adapter_additional_values` variables are now lists of strings instead of a single string. This allows to pass multiple values to the chart.
+- The kubernetes resources are now created using the `v1` version.
+- The `template_file` data sources are replaced with `templatefile` function calls.
+
+### Added
+
+- The `versions.tf` file is now present in the module root directory.
 
 ## [2.1.0] - 2023-06-13
 
@@ -27,7 +39,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Generate different `grafana` and `basic_auth` passwords.
 
 ## [1.1.0] - 2022-09-07
-
 
 ## [1.0.0] - 2022-02-11
 
