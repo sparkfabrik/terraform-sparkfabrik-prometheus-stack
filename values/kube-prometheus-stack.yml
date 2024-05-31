@@ -22,6 +22,7 @@ grafana:
     %{~ if trimspace(grafana_ingress_class) != "" ~}
     ingressClassName: ${grafana_ingress_class}
     %{~ endif ~}
+    %{~ if (trimspace(grafana_cluster_issuer_name) != "" || trimspace(grafana_ingress_basic_auth_username) != "") ~}
     annotations:
       %{~ if trimspace(grafana_cluster_issuer_name) != "" ~}
       cert-manager.io/cluster-issuer: "${grafana_cluster_issuer_name}"
@@ -32,6 +33,7 @@ grafana:
       nginx.ingress.kubernetes.io/auth-realm: "${grafana_ingress_basic_auth_message}"
       nginx.ingress.kubernetes.io/auth-secret: "${grafana_ingress_basic_auth_secret}"
       %{~ endif ~}
+    %{~ endif ~}
     hosts:
       - ${grafana_ingress_host}
     %{~ if trimspace(grafana_cluster_issuer_name) != "" ~}

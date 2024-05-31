@@ -142,10 +142,11 @@ moved {
 | <a name="input_grafana_tls_secret_name"></a> [grafana\_tls\_secret\_name](#input\_grafana\_tls\_secret\_name) | TLS secret name. If the variable is left empty, the value will be filled by the module using default value. | `string` | `""` | no |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | This is the namespace used to install kube-prometheus-stack. | `string` | `"kube-prometheus-stack"` | no |
 | <a name="input_prometheus_adapter_additional_values"></a> [prometheus\_adapter\_additional\_values](#input\_prometheus\_adapter\_additional\_values) | Override values for prometheus-adapter release. If this variable is not an empy list, it will be merged with the other values. | `list(string)` | `[]` | no |
-| <a name="input_prometheus_adapter_chart_version"></a> [prometheus\_adapter\_chart\_version](#input\_prometheus\_adapter\_chart\_version) | Chart version Prometheus Adapter. If the variable is left empty, the Prometheus Adapter Chart will not be installed. | `string` | `""` | no |
+| <a name="input_prometheus_adapter_chart_version"></a> [prometheus\_adapter\_chart\_version](#input\_prometheus\_adapter\_chart\_version) | Chart version Prometheus Adapter. If the variable `prometheus_adapter_enabled` is set to `false`, the Prometheus Adapter Chart will not be installed. | `string` | `"4.10.0"` | no |
+| <a name="input_prometheus_adapter_enabled"></a> [prometheus\_adapter\_enabled](#input\_prometheus\_adapter\_enabled) | If true, the Prometheus Adapter Chart will be installed. | `bool` | `false` | no |
 | <a name="input_prometheus_stack_additional_values"></a> [prometheus\_stack\_additional\_values](#input\_prometheus\_stack\_additional\_values) | Override values for kube-prometheus-stack release. If this variable is not an empy list, it will be merged with the other values. | `list(string)` | `[]` | no |
-| <a name="input_prometheus_stack_chart_version"></a> [prometheus\_stack\_chart\_version](#input\_prometheus\_stack\_chart\_version) | Chart version Prometheus-stack. | `string` | n/a | yes |
-| <a name="input_regcred"></a> [regcred](#input\_regcred) | Name of the secret of the docker credentials. | `string` | n/a | yes |
+| <a name="input_prometheus_stack_chart_version"></a> [prometheus\_stack\_chart\_version](#input\_prometheus\_stack\_chart\_version) | Chart version Prometheus-stack. You can change the version of the chart to install a different version of the chart, but the shipped values are created for the specified version. | `string` | `"59.0.0"` | no |
+| <a name="input_regcred"></a> [regcred](#input\_regcred) | Name of the secret of the docker credentials. | `string` | `""` | no |
 
 ## Outputs
 

@@ -100,7 +100,7 @@ resource "helm_release" "kube_prometheus_stack" {
 }
 
 resource "helm_release" "prometheus_adapter" {
-  count = trimspace(var.prometheus_adapter_chart_version) != "" ? 1 : 0
+  count = var.prometheus_adapter_enabled ? 1 : 0
 
   name       = local.app_name_adapter
   repository = "https://prometheus-community.github.io/helm-charts"
