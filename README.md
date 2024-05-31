@@ -65,33 +65,37 @@ module "kube_prometheus_stack" {
 }
 ```
 
+# Upgrading from 3.X.Y to 4.0.0
+
+For the upgrading note, see the [CHANGELOG](./CHANGELOG.md#400---2024-05-31) note for the `4.0.0` release.
+
 # Upgrading from 2.X.Y to 3.0.0
 
 Upgrading to `3.0.0` from `2.X.Y` will cause the destruction of the namespace and the basic auth secret.
-You will need to use the `moved` resource, to move the namespace and the secret as shown below:
+You will need to remove these resources from the state and import them in the new `v1` resources.
 
-```hcl
-moved {
-  from = module.MODULE_NAME.kubernetes_namespace.kube_prometheus_stack_namespace[0]
-  to   = moudle.MODULE_NAME.kubernetes_namespace_v1.kube_prometheus_stack_namespace[0]
-}
+```bash
+# Remove the resources from the state
+terraform state rm 'module.MODULE_NAME.kubernetes_namespace.kube_prometheus_stack_namespace[0]'
+terraform state rm 'module.MODULE_NAME.kubernetes_secret.kube_prometheus_ingress_auth[0]'
 
-moved {
-  from = moudle.MODULE_NAME.kubernetes_secret.kube_prometheus_ingress_auth[0]
-  to   = moudle.MODULE_NAME.kubernetes_secret_v1.kube_prometheus_ingress_auth[0]
-}
+# Import the resources in the new v1 resources
+terraform import 'module.MODULE_NAME.kubernetes_namespace_v1.kube_prometheus_stack_namespace[0]' kube-prometheus-stack
+terraform import 'module.MODULE_NAME.kubernetes_secret_v1.kube_prometheus_ingress_auth[0]' kube-prometheus-stack/kube-prometheus-stack-basic-auth
 ```
 
 Because of the change of the the `prometheus_stack_additional_values` and `prometheus_adapter_additional_values` variable types, from `string` to `list(string)`, you will need to change the way you pass the values to the module. If you are using a single value, you only need to wrap it in a list, as shown below:
 
 ```hcl
-prometheus_stack_additional_values = [templatefile(
-  "${path.module}/files/kube-prometheus-stack/values.yaml",
-  {
-    var01 = "value01"
-    var02 = "value02"
-  }
-)]
+prometheus_stack_additional_values = [
+  templatefile(
+    "${path.module}/files/kube-prometheus-stack/values.yaml",
+    {
+      var01 = "value01"
+      var02 = "value02"
+    }
+  )
+]
 ```
 
 # Updgrade from 1.1.0 to 2.0.0
