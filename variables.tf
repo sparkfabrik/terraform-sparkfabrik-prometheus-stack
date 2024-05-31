@@ -1,12 +1,18 @@
 variable "prometheus_stack_chart_version" {
   type        = string
-  description = "Chart version Prometheus-stack."
+  description = "Chart version Prometheus-stack. You can change the version of the chart to install a different version of the chart, but the shipped values are created for the specified version."
+  default     = "59.0.0"
 }
 
+variable "prometheus_adapter_enabled" {
+  type        = bool
+  description = "If true, the Prometheus Adapter Chart will be installed."
+  default     = false
+}
 variable "prometheus_adapter_chart_version" {
   type        = string
-  description = "Chart version Prometheus Adapter. If the variable is left empty, the Prometheus Adapter Chart will not be installed."
-  default     = ""
+  description = "Chart version Prometheus Adapter. If the variable `prometheus_adapter_enabled` is set to `false`, the Prometheus Adapter Chart will not be installed."
+  default     = "4.10.0"
 }
 
 variable "create_namespace" {
@@ -24,6 +30,7 @@ variable "namespace" {
 variable "regcred" {
   type        = string
   description = "Name of the secret of the docker credentials."
+  default     = ""
 }
 
 variable "grafana_ingress_host" {

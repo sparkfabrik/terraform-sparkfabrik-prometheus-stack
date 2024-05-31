@@ -2,10 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [4.0.0] - 2024-05-31
+
+[Compare with previous version](https://github.com/sparkfabrik/terraform-sparkfabrik-prometheus-stack/compare/3.0.0...4.0.0)
+
+⚠️ **BREAKING CHANGES** ⚠️
+
+In the previous version, if the `prometheus_adapter_chart_version` variable was set, the module enabled the Prometheus Adapter installation. **This behavior has been changed**. Now, to enable the Prometheus Adapter installation, you must set the `prometheus_adapter_enabled` variable to `true`. The `prometheus_adapter_chart_version` variable is now optional and is used if you want to specify a different chart version from the default one. Remember that the shipped chart values are specific to the default chart version.
+
+**If you are not using the Prometheus Adapter (you do not specify the `prometheus_adapter_chart_version` variable in your configuration)**, you can safely ignore this breaking change.
+
+### Added
+
+- Add the default versions for `prometheus_stack_chart_version` and `prometheus_adapter_chart_version` variables. These values indicate the default chart version to use and the reference to the shipped chart values.
+- Add the `prometheus_adapter_enabled` variable to enable or disable the Prometheus Adapter installation.
 
 ## [3.0.0] - 2023-11-30
 
