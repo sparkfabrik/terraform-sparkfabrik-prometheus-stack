@@ -17,6 +17,14 @@ In the previous version, if the `prometheus_adapter_chart_version` variable was 
 
 **If you are not using the Prometheus Adapter (you do not specify the `prometheus_adapter_chart_version` variable in your configuration)**, you can safely ignore this breaking change.
 
+If you receive the following error message during the upgrade:
+
+```bash
+cannot patch "kube-prometheus-stack-prometheus-node-exporter" with kind DaemonSet: DaemonSet.apps "kube-prometheus-stack-prometheus-node-exporter" is invalid: spec.selector: Invalid value: v1.LabelSelector{MatchLabels:map[string]string{"app.kubernetes.io/instance":"kube-prometheus-stack", "app.kubernetes.io/name":"prometheus-node-exporter"}, MatchExpressions:[]v1.LabelSelectorRequirement(nil)}: field is immutable
+```
+
+you can delete the `DaemonSet` (`kubectl delete daemonsets kube-prometheus-stack-prometheus-node-exporter`) resource and apply the changes again. The helm release will recreate the `DaemonSet` resource with the correct selector. The only drawback is that you will lose the metrics collected by the `DaemonSet` during the downtime.
+
 ### Added
 
 - Add the default versions for `prometheus_stack_chart_version` and `prometheus_adapter_chart_version` variables. These values indicate the default chart version to use and the reference to the shipped chart values.

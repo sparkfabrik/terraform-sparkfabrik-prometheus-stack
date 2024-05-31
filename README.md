@@ -65,13 +65,13 @@ module "kube_prometheus_stack" {
 }
 ```
 
-# Upgrading from 3.X.Y to 4.0.0
+# Upgrading from 3.Y.Z to 4.0.0
 
 For the upgrading note, see the [CHANGELOG](./CHANGELOG.md#400---2024-05-31) note for the `4.0.0` release.
 
-# Upgrading from 2.X.Y to 3.0.0
+# Upgrading from 2.Y.Z to 3.0.0
 
-Upgrading to `3.0.0` from `2.X.Y` will cause the destruction of the namespace and the basic auth secret.
+Upgrading to `3.0.0` from `2.Y.Z` will cause the destruction of the namespace and the basic auth secret.
 You will need to remove these resources from the state and import them in the new `v1` resources.
 
 ```bash
