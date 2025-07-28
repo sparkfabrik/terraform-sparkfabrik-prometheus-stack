@@ -86,15 +86,16 @@ resource "helm_release" "kube_prometheus_stack" {
 
   values = local.kube_prometheus_stack_values
 
-  set_sensitive {
-    name  = "grafana.adminPassword"
-    value = random_password.grafana_admin_password.result
-  }
-
-  set_sensitive {
-    name  = "grafana.adminUser"
-    value = var.grafana_admin_user
-  }
+  set_sensitive = [ 
+    {
+      name  = "grafana.adminPassword"
+      value = random_password.grafana_admin_password.result
+    }, 
+    {
+      name  = "grafana.adminUser"
+      value = var.grafana_admin_user
+    }
+  ]
 
   depends_on = [kubernetes_secret_v1.kube_prometheus_ingress_auth]
 }

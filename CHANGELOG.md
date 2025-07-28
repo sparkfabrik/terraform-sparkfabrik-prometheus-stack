@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.0.0] - 2025-07-28
+
+[Compare with previous version](https://github.com/sparkfabrik/terraform-sparkfabrik-prometheus-stack/compare/4.0.0...5.0.0)
+
+⚠️ **BREAKING CHANGES** ⚠️
+
+The Helm provider version has been updated from 2.x to 3.0. This upgrade introduces significant breaking changes that must be implemented for everything to work correctly.
+
+**Required actions**:
+
+- Update provider configuration: Ensure that the Helm provider version in your project is at least 3.0.
+- Follow the official guide: Consult the official Helm provider [migration guide](https://github.com/hashicorp/terraform-provider-helm/blob/1efcb0eb9fb57b89a5da101040d3dff2fea2e204/docs/guides/v3-upgrade-guide.md) to implement all necessary changes.
+- Test the configuration: Verify that all components work correctly after the upgrade.
+
 ## [4.0.0] - 2024-05-31
 
 [Compare with previous version](https://github.com/sparkfabrik/terraform-sparkfabrik-prometheus-stack/compare/3.0.0...4.0.0)
