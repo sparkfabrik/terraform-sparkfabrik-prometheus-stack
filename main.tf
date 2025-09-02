@@ -81,16 +81,16 @@ resource "helm_release" "kube_prometheus_stack" {
   name       = local.app_name_stack
   repository = "https://prometheus-community.github.io/helm-charts"
   chart      = "kube-prometheus-stack"
-  namespace  = kubernetes_namespace_v1.kube_prometheus_stack_namespace[0].metadata[0].name
+  namespace  = var.create_namespace ? kubernetes_namespace_v1.kube_prometheus_stack_namespace[0].metadata[0].name : var.namespace
   version    = var.prometheus_stack_chart_version
 
   values = local.kube_prometheus_stack_values
 
-  set_sensitive = [ 
+  set_sensitive = [
     {
       name  = "grafana.adminPassword"
       value = random_password.grafana_admin_password.result
-    }, 
+    },
     {
       name  = "grafana.adminUser"
       value = var.grafana_admin_user
